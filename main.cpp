@@ -16,11 +16,17 @@ public:
 	bool OnUserCreate() override
 	{
 		// Called at the start
+		int map[160][90]; //0 means nothing there, 1 means block there
+		int i, j;
+		for(i=0;i<160;i++)
+			for(j=0;j<90;j++)
+				map[i][j]=0;
 		return true;
 	}
 	bool OnUserUpdate(float fElapsedTime) override
 	{
 		// Called once per frame
+		int closestTileX, closestTileY;
 		for(int x = 0; x < ScreenWidth(); x++)
 			for(int y = 0; y < ScreenHeight(); y++)
 				Draw(x,y,olc::Pixel(255,0,0));
@@ -41,7 +47,10 @@ public:
 		}
 
 		if(GetMouse(0)){
-			Draw(GetMouseX(), GetMouseY(), olc::Pixel(0,0,100));
+			closestTileX = getMouseX()/8;
+			closestTileY = getMouseY()/8;
+			map[closestTileX][closestTileY]=1;
+			DrawSprite(closestTileX*8, closestTileY*8, new olc::Sprite("block.png"));
 		}
 
 		// monster movement logic
