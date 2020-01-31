@@ -39,10 +39,14 @@ public:
 		{
 			player.setX(player.getX() + player.getSpeed());
 		}
+
+		if(GetMouse(0)){
+			Draw(GetMouseX(), GetMouseY(), olc::Pixel(0,0,100));
+		}
+
 		// monster movement logic
 		monster.setx(monster.getx()+monster.getspeed()*monster.getdirection());
 		monster.sety(monster.gety + monster.getgravity);
-
 		return true;
 	}
 	bool OnUserDestroy() override
