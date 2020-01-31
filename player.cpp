@@ -12,7 +12,7 @@ public:
 		this.y = y;
 	}
 
-	bool OnUserUpdate(float fElapsedTIme) override 
+	bool OnUserUpdate(float fElapsedTime) override 
 	{
 		//Movement
 		if(GetKey(olc::Key::LEFT).bHeld)
