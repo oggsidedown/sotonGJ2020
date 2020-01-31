@@ -1,38 +1,57 @@
 #define OLC_PGE_APPLICATION
+#include <iostream>
 #include "olcPixelGameEngine.h"
+#include "Player.cpp"
 
 class Game : public olc::PixelGameEngine
-{
-	public:
-		Game()
+{	
+private:
+	Player player = Player(1, 5);
+public:
+	Game()
+	{
+		sAppName = "GameJam";
+	}
+	bool OnUserCreate() override
+	{
+		// Called at the start
+		return true;
+	}
+	bool OnUserUpdate(float fElapsedTime) override
+	{
+		// Called once per frame
+		for(int x = 0; x < ScreenWidth(); x++)
+			for(int y = 0; y < ScreenHeight(); y++)
+				Draw(x,y,olc::Pixel(255,0,0));
+		Draw(this->player.getX(), this->player.getY(), olc::Pixel(100,100,100));
+		
+		// Movement Logic	
+		if(GetKey(olc::Key::LEFT).bHeld)
 		{
-			sAppName = "Example";
+			player.setX(player.getX() - player.getSpeed());
+			if(player.getX() < 0) 
+			{
+				player.setX(0);
+			}
 		}
-	public:
-		bool OnUserCreate() override
+		if(GetKey(olc::Key::RIGHT).bHeld)
 		{
-			// Called at the start
-			Player player = new Player(0f, 200f);
-			return true;
+			player.setX(player.getX() + player.getSpeed());
 		}
-		bool OnUserUpdate(float fElapsedTime) override
-		{
-			// Called once per frame
-			return true;
-		}
-		bool OnUserDestroy() override
-		{
-			// Called when window is closed
-			return true;
-		}
+
+		return true;
+	}
+	bool OnUserDestroy() override
+	{
+		// Called when window is closed
+		return true;
+	}
 };
 
 int main()
 {
-	Example demo;
-	if (demo.Construct(256,240,4,4)
-	{
+	Game demo;
+	if (demo.Construct(50,50,10,10))
 		demo.Start();
-	}
 	return 0;
-
+}
