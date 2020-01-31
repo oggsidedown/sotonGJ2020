@@ -25,7 +25,7 @@ public:
 			for(int y = 0; y < ScreenHeight(); y++)
 				Draw(x,y,olc::Pixel(255,0,0));
 		Draw(this->player.getX(), this->player.getY(), olc::Pixel(100,100,100));
-		
+		Draw(monster.getx(), monster.gety(), olc::Pixel(0,100,0);
 		// Movement Logic	
 		if(GetKey(olc::Key::LEFT).bHeld)
 		{
@@ -39,6 +39,9 @@ public:
 		{
 			player.setX(player.getX() + player.getSpeed());
 		}
+		// monster movement logic
+		monster.setx(monster.getx()+monster.getspeed()*monster.getdirection());
+		monster.sety(monster.gety + monster.getgravity);
 
 		return true;
 	}
