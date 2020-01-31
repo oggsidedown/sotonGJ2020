@@ -2,6 +2,7 @@
 #include <iostream>
 #include "olcPixelGameEngine.h"
 #include "Player.cpp"
+#include "constants.h"
 
 class Game : public olc::PixelGameEngine
 {	
@@ -51,7 +52,7 @@ public:
 int main()
 {
 	Game demo;
-	if (demo.Construct(50,50,10,10))
+	if (demo.Construct(SCREEN_WIDTH,SCREEN_HEIGHT,1,1))
 		demo.Start();
 	return 0;
 }
