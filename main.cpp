@@ -39,7 +39,9 @@ public:
 		{
 			player.setX(player.getX() + player.getSpeed());
 		}
-
+		if(GetMouse(0)){
+			Draw(GetMouseX(), GetMouseY(), olc::Pixel(0,0,100));
+		}
 		return true;
 	}
 	bool OnUserDestroy() override
