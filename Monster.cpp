@@ -1,11 +1,11 @@
+#include "constants.h"
 class Monster : public olc::PixelGameEngine
 {
 private:
-	float x;
-	float y;
-	float speed = 0.1f;
-	float direction; // 1 is right, -1 is left
-	float gravity = 0.5f; // +ve is down
+	int x;
+	int y;
+	int speed = 2;
+	int direction; // 1 is right, -1 is left
 public:
 	Monster(float x, float y, float direction)
 	{
@@ -26,17 +26,10 @@ public:
 	int getspeed(){
 		return this->speed;
 	}
-	int getgravity(){
-		return this->gravity;
-	}
 	void sety(int yinput){
 		this->y=yinput;
-		if(this->y>=719){
-			this->y=719;
-			this->gravity=0;
-		}
-		else{
-			this->gravity=0.5f;
+		if(this->y>=SCREEN_HEIGHT-32){
+			this->y=SCREEN_HEIGHT-32;
 		}
 		if(this->y<0){
 			this->y=0;
@@ -61,10 +54,6 @@ public:
 	}
 	void setdirection(int directioninput){
 		this->direction=directioninput;
-		return;
-	}
-	void setgravity(int gravityinput){
-		this->gravity=gravityinput;
 		return;
 	}
 private:

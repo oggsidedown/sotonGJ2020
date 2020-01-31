@@ -2,12 +2,15 @@
 #include <iostream>
 #include "olcPixelGameEngine.h"
 #include "Player.cpp"
+#include "Monster.cpp"
 #include "constants.h"
 
 class Game : public olc::PixelGameEngine
 {	
 private:
 	Player player = Player(1, 5);
+	Monster monster = Monster(0, 0, 1);
+	int map[160][90]; 
 public:
 	Game()
 	{
@@ -20,10 +23,8 @@ public:
 			for(int y = 0; y < ScreenHeight(); y++)
 				Draw(x,y,olc::Pixel(50,200,50));
 		// Called at the start
-		int map[160][90]; //0 means nothing there, 1 means block there
-		int i, j;
-		for(i=0;i<160;i++)
-			for(j=0;j<90;j++)
+		for(int i=0;i<160;i++)
+			for(int j=0;j<90;j++)
 				map[i][j]=0;
 		return true;
 	}
@@ -31,12 +32,8 @@ public:
 	{
 		// Called once per frame
 		
-		int closestTileX, closestTileY;
-		for(int x = 0; x < ScreenWidth(); x++)
-			for(int y = 0; y < ScreenHeight(); y++)
-				Draw(x,y,olc::Pixel(255,0,0));
 		Draw(this->player.getX(), this->player.getY(), olc::Pixel(100,100,100));
-		Draw(monster.getx(), monster.gety(), olc::Pixel(0,100,0);
+		Draw(monster.getx(), monster.gety(), olc::Pixel(0,100,0));
 		// Movement Logic	
 		if(GetKey(olc::Key::LEFT).bHeld)
 		{
@@ -57,16 +54,17 @@ public:
 
 		// Rendering	
 		DrawSprite(this->player.getX(), this->player.getY(), new olc::Sprite("charTEMP.png"));
-		if(GetMouse(0)){
-			closestTileX = getMouseX()/8;
-			closestTileY = getMouseY()/8;
+		int closestTdileX, closestTileY;
+		if(GetMouse(0).bPressed){
+			int closestTileX = GetMouseX()/8;
+			int closestTileY = GetMouseY()/8;
 			map[closestTileX][closestTileY]=1;
 			DrawSprite(closestTileX*8, closestTileY*8, new olc::Sprite("block.png"));
 		}
 
 		// monster movement logic
 		monster.setx(monster.getx()+monster.getspeed()*monster.getdirection());
-		monster.sety(monster.gety + monster.getgravity);
+		monster.sety(monster.gety() + GRAVITY);
 		return true;
 	}
 	bool OnUserDestroy() override
