@@ -41,6 +41,7 @@ public:
 		if(this->y<0){
 			this->y=0;
 		}
+		return;
 	}
 	void setx(int xinput){
 		this->x=xinput;
@@ -52,15 +53,19 @@ public:
 				this->x=1279;
 				this->direction = -1;
 		}
+		return;
 	}
 	void setspeed(int speedinput){
 		this->speed=speedinput;
+		return;
 	}
 	void setdirection(int directioninput){
 		this->direction=directioninput;
+		return;
 	}
 	void setgravity(int gravityinput){
 		this->gravity=gravityinput;
+		return;
 	}
 private:
 	void readSpriteData(){
