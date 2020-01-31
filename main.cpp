@@ -1,10 +1,10 @@
 #define OLC_PGE_APPLICATION
 #include "olcPixelGameEngine.h"
 
-class Example : public olc::PixelGameEngine
+class Game : public olc::PixelGameEngine
 {
 	public:
-		Example()
+		Game()
 		{
 			sAppName = "Example";
 		}
@@ -12,6 +12,7 @@ class Example : public olc::PixelGameEngine
 		bool OnUserCreate() override
 		{
 			// Called at the start
+			Player player = new Player(0f, 200f);
 			return true;
 		}
 		bool OnUserUpdate(float fElapsedTime) override
@@ -34,4 +35,4 @@ int main()
 		demo.Start();
 	}
 	return 0;
-}
+
