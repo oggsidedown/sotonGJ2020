@@ -4,8 +4,12 @@ class Player : public olc::PixelGameEngine
 private:
 	int x;
 	int y;
-	int speed = 1;	
+	int speed = 5;	
+
+	bool grounded = false;
+	bool facingRight = true;
 public:
+
 	Player(int x, int y)
 	{
 		//Relative to pixel
@@ -39,6 +43,11 @@ public:
 	{
 		this->y = y;
 	}
+
+	void setGrounded(bool grounded) {
+		this->grounded = grounded;	
+	}
+
 private:
 	void readSpriteData(){
 	}
