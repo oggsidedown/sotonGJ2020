@@ -35,15 +35,15 @@ public:
 		Draw(this->player.getX(), this->player.getY(), olc::Pixel(100,100,100));
 		Draw(monster.getx(), monster.gety(), olc::Pixel(0,100,0));
 		// Movement Logic	
-		if(GetKey(olc::Key::LEFT).bHeld)
-		{
-			player.setX(player.getX() - player.getSpeed());
-			if(player.getX() < 0) player.setX(0);
-		}
 		if(GetKey(olc::Key::RIGHT).bHeld)
 		{
-			player.setX(player.getX() + player.getSpeed());
-			if(player.getX() > SCREEN_WIDTH) player.setX(SCREEN_WIDTH);
+			player.setMoving(true);
+			player.setDirection(1);
+		} else	if(GetKey(olc::Key::LEFT).bHeld) {
+			player.setMoving(true);
+			player.setDirection(-1);
+		} else {
+			player.setMoving(false);
 		}
 		
 		if(player.getY() > SCREEN_HEIGHT - 32) 
@@ -51,11 +51,14 @@ public:
 			player.setGrounded(true);
 			player.setY(SCREEN_HEIGHT - 32);
 		}
-
+			
+		// update player
+		player.update();
+	
 		// Rendering	
 		DrawSprite(this->player.getX(), this->player.getY(), new olc::Sprite("charTEMP.png"));
 		int closestTdileX, closestTileY;
-		if(GetMouse(0).bPressed){
+		if(GetMouse(0).bHeld){
 			int closestTileX = GetMouseX()/8;
 			int closestTileY = GetMouseY()/8;
 			map[closestTileX][closestTileY]=1;
