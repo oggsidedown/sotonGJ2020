@@ -184,6 +184,8 @@
 	}
 */
 
+#pragma once
+
 #ifndef OLC_PGE_DEF
 #define OLC_PGE_DEF
 

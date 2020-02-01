@@ -1,5 +1,6 @@
 #include <iostream>
-#include "constants.h"
+#include "include/constants.h"
+#include "include/olcPixelGameEngine.h"
 
 class Player : public olc::PixelGameEngine 
 {
