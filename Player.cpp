@@ -85,12 +85,12 @@ public:
 		}
 		setX(getX() + (getSpeed() * run_vel * direction));	
 	}	
-
+	
 	void jump() 
 	{
 		if(grounded) 
 		{
-			y_vel = -8.0f;
+			y_vel = -5.0f;
 			setGrounded(false);
 		}
 	}

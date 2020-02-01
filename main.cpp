@@ -12,6 +12,8 @@ private:
 	Player player = Player(1, 5);
 	Monster monster = Monster(0, 0, 1);
 	int map[(int)SCREEN_HEIGHT/8][(int)SCREEN_WIDTH/8];
+	int drawJuice = 40;
+	bool paused = false;
 public:
 	Game()
 	{
@@ -25,16 +27,13 @@ public:
 			for(int y = 0; y < ScreenHeight(); y++)
 				Draw(x,y,olc::Pixel(50,200,50));
 		// Called at the start
-<<<<<<< HEAD
 		for(int i=0;i<(int)SCREEN_HEIGHT/8;i++)
 			for(int j=0;j<(int)SCREEN_WIDTH/8;j++)
-=======
-		int paused =0;
-		int drawJuice = 40;
-		for(int i=0;i<160;i++)
-			for(int j=0;j<90;j++)
->>>>>>> bb09044a9fd07f5f173cfa3eb5d5ec4a80a26fed
 				map[i][j]=0;
+		
+		FillRect(SCREEN_WIDTH/2, 20, 40*5, 40, olc::Pixel(0,0,0)); 
+		FillRect(SCREEN_WIDTH/2, 20, drawJuice*5, 40, olc::Pixel(100,255,50)); 
+
 		return true;
 	}
 	bool OnUserUpdate(float fElapsedTime) override
@@ -43,11 +42,12 @@ public:
 //		Clear(olc::WHITE);	
 		Draw(this->player.getX(), this->player.getY(), olc::Pixel(100,100,100));
 		Draw(monster.getx(), monster.gety(), olc::Pixel(0,100,0));
-		if(paused){
-			FillRect(SCREEN_WIDTH/2, 5, drawJuice, 10, olc::Pixel(0,100,0)); 
+		if(paused) {	
+			FillRect(SCREEN_WIDTH/2, 20, 40*5, 40, olc::Pixel(0,0,0)); 
+			FillRect(SCREEN_WIDTH/2, 20, drawJuice*5, 40, olc::Pixel(100,255,50)); 
 		}
 		else{
-			fillRect(SCREEN_WIDTH/2, 5, 40, 10, olc::Pixel(50,200,50));
+//			FillRect(SCREEN_WIDTH/2, 20, 40, 40, olc::Pixel(50,200,50));
 		}
 		// Movement Logic	
 		if(GetKey(olc::Key::RIGHT).bHeld)
@@ -66,14 +66,11 @@ public:
 			player.jump();
 		}
 	
-		if(player.getY() > SCREEN_HEIGHT - 32) 
+		if(player.getY() > SCREEN_HEIGHT - 16) 
 		{
 			player.setGrounded(true);
-			player.setY(SCREEN_HEIGHT - 32);
-		}
-			
-		// update player
-		player.update();
+			player.setY(SCREEN_HEIGHT - 16);
+		}	
 	
 		// Rendering	
 		DrawSprite(this->player.getX(), this->player.getY(), new olc::Sprite("charTEMP.png"));
@@ -82,16 +79,19 @@ public:
 		if(GetMouse(0).bHeld && paused && drawJuice>0){
 			int closestTileX = GetMouseX()/8;
 			int closestTileY = GetMouseY()/8;
-			map[closestTileY][closestTileX]=1;
-			DrawSprite((closestTileX)*8, (closestTileY)*8, new olc::Sprite("block.png"));
-			drawJuice--;
+			if (!map[closestTileY][closestTileX]==1){
+				map[closestTileY][closestTileX]=1;
+				DrawSprite((closestTileX)*8, (closestTileY)*8, new olc::Sprite("block.png"));
+				drawJuice--;
+			}
 		}
-		if(GetKey(olc::Key::ESCAPE)){
-			if(paused)
-				paused = 0;
-			if(!paused)
-				paused = 1;
+		if(GetKey(olc::Key::ESCAPE).bPressed){
+			paused = !paused;
 		}	
+
+		// Only update player if not paused
+		if(!paused) player.update();
+
 		int playerTileX = player.getX() / 8;
 		int playerTileY = player.getY() / 8;
 		for (int i = -4; i <= 4; i++)
@@ -105,14 +105,25 @@ public:
 				
 				if(map[playerTileY+i][playerTileX+j]==1)
 				{
+					/*
+					olc::Sprite mysprite(20, 20);
+					mysprite.SetPixel(0, 0, olc::RED);
+					DrawSprite(20, 20, &mysprite, 2);
+					*/	
 					DrawSprite((playerTileX+j)*8, (playerTileY+i)*8, new olc::Sprite("block.png"));
 				}
 			}
 		}		
 
+		// Collision Detection
+		
+
+
 		// monster movement logic
-		monster.setx(monster.getx()+monster.getspeed()*monster.getdirection());
-		monster.sety(monster.gety() + GRAVITY);
+		if(!paused) {
+			monster.setx(monster.getx()+monster.getspeed()*monster.getdirection());
+			monster.sety(monster.gety() + GRAVITY);
+		}
 		if(GetKey(olc::C).bPressed && GetKey(olc::CTRL).bHeld) return false;
 		return true;
 	}
