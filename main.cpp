@@ -20,6 +20,7 @@ public:
 	bool OnUserCreate() override
 	{
 		// Called at the start	
+		system("canberra-gtk-play -f audio.ogg");
 		for(int x = 0; x < ScreenWidth(); x++)
 			for(int y = 0; y < ScreenHeight(); y++)
 				Draw(x,y,olc::Pixel(50,200,50));
