@@ -25,6 +25,8 @@ public:
 			for(int y = 0; y < ScreenHeight(); y++)
 				Draw(x,y,olc::Pixel(50,200,50));
 		// Called at the start
+		int newLevel = 1;
+		int level = 1;
 		int paused =0;
 		int drawJuice = 40;
 		for(int i=0;i<160;i++)
@@ -35,7 +37,28 @@ public:
 	bool OnUserUpdate(float fElapsedTime) override
 	{
 		// Called once per frame
-		
+		if(newLevel){
+			switch(level++){
+				case 1:
+					for(i=0;i<SCREEN_WIDTH;i++){
+						map[i][60]=1;
+						DrawSprite(i*8, 60*8, new olc::Sprite("block.png"));
+					}
+					Goal goal = Goal(1200, 55*8);
+					DrawSprite(goal.getx(), goal.gety(), new olc::Sprite("spanner1.png"));
+				break;
+				case 2:
+					FillRect(0,0,SCREEN_WIDTH-1, SCREEN_HEIGHT-1, olc::Pixel(50,200,50);
+				break;
+			}
+			newLevel=0;
+		}
+		if(player.getX()-5<goal.getx() && player.getX()+5>goal.getx() && player.getY()-5<goal.gety() && player.getY()+5>goal.gety()){
+			newLevel=1;
+			player.setX(1);
+			player.setY(2);
+			
+		}
 		Draw(this->player.getX(), this->player.getY(), olc::Pixel(100,100,100));
 		Draw(monster.getx(), monster.gety(), olc::Pixel(0,100,0));
 		if(paused){
