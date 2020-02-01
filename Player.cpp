@@ -63,7 +63,24 @@ public:
 	{
 		this->direction = direction;
 	}
-	
+
+	void setXVel(float vel)
+	{
+		run_vel = vel;
+	}
+	void setYVel(float vel) 
+	{
+		y_vel = vel;
+	}
+
+	bool getGrounded()
+	{
+		return grounded;
+	}
+	int getDirection() 
+	{
+		return direction;
+	}		
 	void update() {
 		// gravity accelerates
 		if(!grounded) 
@@ -90,7 +107,7 @@ public:
 	{
 		if(grounded) 
 		{
-			y_vel = -30.0f;
+			y_vel = -5.0f;
 			setGrounded(false);
 		}
 	}

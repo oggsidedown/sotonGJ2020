@@ -10,15 +10,15 @@
 class Game : public olc::PixelGameEngine
 {	
 private:
-	Player player = Player(1, 5);
+	Player player = Player(100, 450);
 	Monster monster = Monster(0, 0, 1);
-	int map[(int)SCREEN_HEIGHT/8][(int)SCREEN_WIDTH/8];
+	int map[(int)SCREEN_HEIGHT/TILESIZE][(int)SCREEN_WIDTH/TILESIZE];
 	int drawJuiceMax = 120;
 	int drawJuice = drawJuiceMax;
 	bool paused = false;
 	int newLevel = 1;
 	int level = 1;
-	Goal goal = Goal(1200, 55*8);
+	Goal goal = Goal(1200, 55*TILESIZE);
 public:
 	Game()
 	{
@@ -32,8 +32,8 @@ public:
 			for(int y = 0; y < ScreenHeight(); y++)
 				Draw(x,y,olc::Pixel(50,200,50));
 		// Called at the start
-		for(int i=0;i<SCREEN_HEIGHT/8;i++)
-			for(int j=0;j<SCREEN_WIDTH/8;j++)
+		for(int i=0;i<SCREEN_HEIGHT/TILESIZE;i++)
+			for(int j=0;j<SCREEN_WIDTH/TILESIZE;j++)
 				map[i][j]=0;
 		
 		FillRect((SCREEN_WIDTH/2) - drawJuiceMax , 20, drawJuiceMax*2, 40, olc::Pixel(0,0,0)); 
@@ -48,23 +48,26 @@ public:
 		if(newLevel){
 			switch(level++){
 				case 1:
-					for(int i=0;i<SCREEN_WIDTH/8;i++){
-						map[60][i]=1;
-						DrawSprite(i*8, 60*8, new olc::Sprite("block.png"));
+					for(int i=0;i<SCREEN_WIDTH/TILESIZE;i++)
+						for(int j=0;j<SCREEN_HEIGHT;j+=0
+							DrawPartialSprite(i*8,j*8, new olc::Sprite("factory.png"), i*8,j*8,8,8);
+					for(int i=0;i<SCREEN_WIDTH/TILESIZE;i++){
+						map[30][i]=1;
+						DrawSprite(i*TILESIZE, 30*TILESIZE, new olc::Sprite("block.png"));
 					}
 					DrawSprite(goal.getx(), goal.gety(), new olc::Sprite("spanner1.png"));
 					break;
 				case 2:
 					FillRect(0,0,SCREEN_WIDTH-1, SCREEN_HEIGHT-1, olc::Pixel(50,200,50));
 					goal.setx(1200);
-					goal.sety(55*8);
+					goal.sety(25*TILESIZE);
 					for(int i=0;i<SCREEN_WIDTH/32;i++){
-						map[i][60] = 1;
-						DrawSprite(i*8, 60*8, new olc::Sprite("block.png"));
+						map[i][30] = 1;
+						DrawSprite(i*TILESIZE, 30*TILESIZE, new olc::Sprite("block.png"));
 					}
-					for(int i=SCREEN_WIDTH*3/32;i<SCREEN_WIDTH/8;i++){
-						map[60][i] = 1;
-						DrawSprite(i*8, 60*8, new olc::Sprite("block.png"));
+					for(int i=SCREEN_WIDTH*3/32;i<SCREEN_WIDTH/TILESIZE;i++){
+						map[30][i] = 1;
+						DrawSprite(i*TILESIZE, 30*TILESIZE, new olc::Sprite("block.png"));
 					}
 					break;
 			}
@@ -74,8 +77,8 @@ public:
 			newLevel=1;
 			player.setX(1);
 			player.setY(2);
-			for(int i=0;i<SCREEN_HEIGHT/8;i++)
-				for(int j=0;j<SCREEN_WIDTH/8;j++)
+			for(int i=0;i<SCREEN_HEIGHT/TILESIZE;i++)
+				for(int j=0;j<SCREEN_WIDTH/TILESIZE;j++)
 					map[i][j]=0;
 			
 		}
@@ -105,10 +108,10 @@ public:
 			player.jump();
 		}
 	
-		if(player.getY() > SCREEN_HEIGHT - 16) 
+		if(player.getY() > SCREEN_HEIGHT - 32) 
 		{
 			player.setGrounded(true);
-			player.setY(SCREEN_HEIGHT - 16);
+			player.setY(SCREEN_HEIGHT - 32);
 		}	
 	
 		// Rendering	
@@ -116,11 +119,11 @@ public:
 		// Create tiles when clicking
 		int closestTdileX, closestTileY;
 		if(GetMouse(0).bHeld && paused && drawJuice>0){
-			int closestTileX = GetMouseX()/8;
-			int closestTileY = GetMouseY()/8;
+			int closestTileX = GetMouseX()/TILESIZE;
+			int closestTileY = GetMouseY()/TILESIZE;
 			if (!map[closestTileY][closestTileX]==1){
 				map[closestTileY][closestTileX]=1;
-				DrawSprite((closestTileX)*8, (closestTileY)*8, new olc::Sprite("block.png"));
+				DrawSprite((closestTileX)*TILESIZE, (closestTileY)*TILESIZE, new olc::Sprite("block.png"));
 				drawJuice--;
 			}
 		}
@@ -131,16 +134,16 @@ public:
 		// Only update player if not paused
 		if(!paused) player.update();
 
-		int playerTileX = player.getX() / 8;
-		int playerTileY = player.getY() / 8;
+		int playerTileX = player.getX() / TILESIZE;
+		int playerTileY = player.getY() / TILESIZE;
 		for (int i = -4; i <= 4; i++)
 		{ 
 			for (int j = -4; j <= 4; j++)
 			{	
 				if(playerTileX+j <= 0) playerTileX = -j;
-				if(playerTileX+j >= SCREEN_WIDTH/8) playerTileX = (SCREEN_WIDTH/8)-j;
+				if(playerTileX+j >= SCREEN_WIDTH/TILESIZE) playerTileX = (SCREEN_WIDTH/TILESIZE)-j;
 				if(playerTileY+i <= 0) playerTileY = -i;
-				if(playerTileY+i >= SCREEN_HEIGHT/8) playerTileY = (SCREEN_HEIGHT/8)-i;
+				if(playerTileY+i >= SCREEN_HEIGHT/TILESIZE) playerTileY = (SCREEN_HEIGHT/TILESIZE)-i;
 				
 				if(map[playerTileY+i][playerTileX+j]==1)
 				{
@@ -149,14 +152,26 @@ public:
 					mysprite.SetPixel(0, 0, olc::RED);
 					DrawSprite(20, 20, &mysprite, 2);
 					*/	
-					DrawSprite((playerTileX+j)*8, (playerTileY+i)*8, new olc::Sprite("block.png"));
+					DrawSprite((playerTileX+j)*TILESIZE, (playerTileY+i)*TILESIZE, new olc::Sprite("block.png"));
 				}
 			}
 		}		
 
 		// Collision Detection
-		
-
+			// Horizontal LEFT
+		if((map[playerTileY][playerTileX-1] == 1 || map[playerTileY+1][playerTileX-1] == 1) && player.getDirection() == -1) player.setXVel(0.0f); 
+			// Horizontal RIGHT
+		if((map[playerTileY][playerTileX+2] == 1 || map[playerTileY+1][playerTileX+2] == 1) && player.getDirection() == 1) player.setXVel(0.0f);
+			// Vertical UP 
+		if((map[playerTileY-1][playerTileX] == 1 || map[playerTileY-1][playerTileX+1] == 1)) player.setYVel(1.0f);
+			// Vertical DOWN 
+		if((map[playerTileY+2][playerTileX] == 1 || map[playerTileY+2][playerTileX+1] == 1) && player.getGrounded() == false)
+		{
+			player.setYVel(0.0f);
+			player.setGrounded(true);
+		} else {
+			player.setGrounded(false);
+		} 
 
 		// monster movement logic
 		if(!paused) {
