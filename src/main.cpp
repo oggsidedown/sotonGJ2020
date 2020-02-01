@@ -193,7 +193,7 @@ public:
 		{
 			for(auto &e:entities) 
 			{
-				e->update();
+				e->update(map);
 			}
 			
 			// monster update
