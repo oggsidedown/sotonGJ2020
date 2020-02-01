@@ -112,7 +112,7 @@ public:
 		}	
 	
 		// Rendering	
-		DrawSprite(this->player.getX(), this->player.getY(), new olc::Sprite("charTEMP.png"));
+		DrawSprite(this->player.getX(), this->player.getY(), new olc::Sprite("waluigi_right1.png"));
 		// Create tiles when clicking
 		int closestTdileX, closestTileY;
 		if(GetMouse(0).bHeld && paused && drawJuice>0){
