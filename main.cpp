@@ -1,5 +1,6 @@
 #define OLC_PGE_APPLICATION
 #include <iostream>
+#include <map>
 #include "olcPixelGameEngine.h"
 #include "Player.cpp"
 #include "Monster.cpp"
@@ -10,7 +11,7 @@ class Game : public olc::PixelGameEngine
 private:
 	Player player = Player(1, 5);
 	Monster monster = Monster(0, 0, 1);
-	int map[160][90]; 
+	int map[SCREEN_HEIGHT/8][SCREEN_WIDTH/8];
 public:
 	Game()
 	{
@@ -62,13 +63,27 @@ public:
 	
 		// Rendering	
 		DrawSprite(this->player.getX(), this->player.getY(), new olc::Sprite("charTEMP.png"));
+		// Create tiles when clicking
 		int closestTdileX, closestTileY;
 		if(GetMouse(0).bHeld){
 			int closestTileX = GetMouseX()/8;
 			int closestTileY = GetMouseY()/8;
-			map[closestTileX][closestTileY]=1;
-			DrawSprite(closestTileX*8, closestTileY*8, new olc::Sprite("block.png"));
+			map[closestTileY][closestTileX]=1;
+			DrawSprite((closestTileX)*8, (closestTileY)*8, new olc::Sprite("block.png"));
 		}
+	
+		int playerTileX = player.getX() / 8;
+		int playerTileY = player.getY() / 8;
+		for (int i = -3; i < 3; i++)
+		{ 
+			for (int j = -3; i < 3; i++)
+			{
+				if(map[playerTileY+i][playerTileX+j]==1)
+				{
+					DrawSprite((playerTileX+j)*8, (playerTileY+i)*8, new olc::Sprite("block.png"));
+				}
+			}
+		}		
 
 		// monster movement logic
 		monster.setx(monster.getx()+monster.getspeed()*monster.getdirection());
