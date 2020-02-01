@@ -1,25 +1,121 @@
 #define OLC_PGE_APPLICATION
 #include <iostream>
-#include <map>
+#include <vector>
 #include "include/olcPixelGameEngine.h"
 #include "include/constants.h"
 #include "Player.cpp"
 #include "Monster.cpp"
 #include "Goal.cpp"
+#include "Entity.cpp"
 
 class Game : public olc::PixelGameEngine
 {	
 private:
-	Player player = Player(100, 450);
-	Monster monster = Monster(0, 0, 1);
+	Player player = Player(100, 150);
+	Monster monster = Monster(20, 20);
+	std::vector<Entity*> entities;
 	int map[(int)SCREEN_HEIGHT/TILESIZE][(int)SCREEN_WIDTH/TILESIZE];
 	int drawJuiceMax = 120;
 	int drawJuice = drawJuiceMax;
 	bool paused = false;
 	int newLevel = 1;
 	int level = 1;
-	Goal goal = Goal(1200, 25*TILESIZE);
+	Goal goal = Goal(1200, 25*TILESIZE); 
 	olc::Sprite fact_sprite = olc::Sprite("assets/factory.png");
+
+private:
+	void checkInputs() 
+	{
+		// Movement Logic horizontal	
+		if(GetKey(olc::Key::RIGHT).bHeld)
+		{
+			player.setMoving(true);
+			player.setDirection(1);
+		} else	if(GetKey(olc::Key::LEFT).bHeld) {
+			player.setMoving(true);
+			player.setDirection(-1);
+		} else {
+			player.setMoving(false);
+		}
+		
+		// Causes the player to jump
+		if(GetKey(olc::Key::SPACE).bHeld)
+		{
+			player.jump();
+		}
+	
+		// Handle player vertical movement
+		if(player.getY() > SCREEN_HEIGHT - TILESIZE) 
+		{
+			player.setGrounded(true);
+			player.setY(SCREEN_HEIGHT - TILESIZE);
+		}	
+
+		// pause the game which allows drawing of tiles
+		if(GetKey(olc::Key::ESCAPE).bPressed){
+			paused = !paused;
+		}	
+
+		//if(GetKey(olc::C).bPressed && GetKey(olc::CTRL).bHeld) return false;
+
+
+	}
+
+	void createTiles() 
+	{
+		// Create tiles when clicking
+		int closestTileX, closestTileY;
+		if(GetMouse(0).bHeld && paused && drawJuice>0){
+			int closestTileX = GetMouseX()/TILESIZE;
+			int closestTileY = GetMouseY()/TILESIZE;
+			if (!(map[closestTileY][closestTileX]==1)){
+				map[closestTileY][closestTileX]=1;
+				DrawSprite((closestTileX)*TILESIZE, (closestTileY)*TILESIZE, new olc::Sprite("assets/block.png"));
+				drawJuice--;
+			}
+		}
+	}
+
+	void Render() 
+	{
+		// Rendering
+			// Redraw the background and tiles
+		int offset = 4;
+		for(auto &e:entities) 
+		{
+			int tileX = (int)(e->getX() / TILESIZE);
+			int tileY = (int)(e->getY() / TILESIZE);
+			// background
+			DrawPartialSprite((tileX-offset)*TILESIZE,(tileY-offset)*TILESIZE, &fact_sprite, (tileX-offset)*TILESIZE,(tileY-offset)*TILESIZE,TILESIZE*offset*2,TILESIZE*offset*2);	
+
+			// redraw tiles near entities
+			for (int i = -offset*2; i <= offset*2; i++)
+			{ 
+				for (int j = -offset*2; j <= offset*2; j++)
+				{	
+					if(tileX+j <= 0) tileX = -j;
+					if(tileX+j >= SCREEN_WIDTH/TILESIZE) tileX = (SCREEN_WIDTH/TILESIZE)-j;
+					if(tileY+i <= 0) tileY = -i;
+					if(tileY+i >= SCREEN_HEIGHT/TILESIZE) tileY = (SCREEN_HEIGHT/TILESIZE)-i;
+					
+					if(map[tileY+i][tileX+j]==1)
+					{
+						DrawSprite((tileX+j)*TILESIZE, (tileY+i)*TILESIZE, new olc::Sprite("assets/block.png"));
+					}
+				}
+			}	
+		}
+		
+			// Draw the player
+		DrawSprite(this->player.getX()-TILESIZE, this->player.getY()-TILESIZE, new olc::Sprite("assets/waluigi_right1.png"), 2);
+			// Draw the monster
+		DrawPartialSprite(monster.getX(), monster.getY(), new olc::Sprite("assets/spritesheet_transparent.png"), 0, 5*16, 16, 16, 2);
+			// draw juice meter
+		FillRect((SCREEN_WIDTH/2) - drawJuiceMax , 20, drawJuiceMax*2, 40, olc::Pixel(0,0,0)); 
+		FillRect((SCREEN_WIDTH/2) - drawJuiceMax, 20, drawJuice*2, 40, olc::Pixel(100,255,50));
+	 
+	}
+
 public:
 	Game()
 	{
@@ -27,6 +123,9 @@ public:
 	}
 	bool OnUserCreate() override
 	{
+
+		entities.push_back((Entity*)&player);
+		entities.push_back((Entity*)&monster);
 		// Called at the start	
 		system("canberra-gtk-play -f assets/audio.ogg");
 		for(int x = 0; x < ScreenWidth(); x++)
@@ -45,7 +144,6 @@ public:
 	bool OnUserUpdate(float fElapsedTime) override
 	{
 		// Called once per frame
-//		Clear(olc::WHITE);
 		if(newLevel){
 			switch(level++){
 				case 1:
@@ -53,8 +151,8 @@ public:
 						for(int j=0;j<SCREEN_HEIGHT/TILESIZE;j++)
 							DrawPartialSprite(i*TILESIZE,j*TILESIZE, &fact_sprite, i*TILESIZE,j*TILESIZE,TILESIZE,TILESIZE);
 					for(int i=0;i<SCREEN_WIDTH/TILESIZE;i++){
-						map[30][i]=1;
-						DrawSprite(i*TILESIZE, 30*TILESIZE, new olc::Sprite("assets/block.png"));
+						map[10][i]=1;
+						DrawSprite(i*TILESIZE, 10*TILESIZE, new olc::Sprite("assets/block.png"));
 					}
 					DrawSprite(goal.getx(), goal.gety(), new olc::Sprite("assets/spanner1.png"));
 					break;
@@ -63,17 +161,18 @@ public:
 					goal.setx(1200);
 					goal.sety(25*TILESIZE);
 					for(int i=0;i<SCREEN_WIDTH/TILESIZE;i++){
-						map[i][30] = 1;
-						DrawSprite(i*TILESIZE, 30*TILESIZE, new olc::Sprite("assets/block.png"));
+						map[i][20] = 1;
+						DrawSprite(i*TILESIZE, 20*TILESIZE, new olc::Sprite("assets/block.png"));
 					}
 					for(int i=SCREEN_WIDTH*3/TILESIZE;i<SCREEN_WIDTH/TILESIZE;i++){
 						map[30][i] = 1;
-						DrawSprite(i*TILESIZE, 30*TILESIZE, new olc::Sprite("assets/block.png"));
+						DrawSprite(i*TILESIZE, 20*TILESIZE, new olc::Sprite("assets/block.png"));
 					}
 					break;
 			}
 			newLevel=0;
 		}
+		// Check if player reaches goal
 		if(player.getX()-5<goal.getx() && player.getX()+5>goal.getx() && player.getY()-5<goal.gety() && player.getY()+5>goal.gety()){
 			newLevel=1;
 			player.setX(1);
@@ -81,106 +180,28 @@ public:
 			for(int i=0;i<SCREEN_HEIGHT/TILESIZE;i++)
 				for(int j=0;j<SCREEN_WIDTH/TILESIZE;j++)
 					map[i][j]=0;
-			
 		}
-		Draw(this->player.getX(), this->player.getY(), olc::Pixel(100,100,100));
-		DrawPartialSprite(monster.getx(), monster.gety(), new olc::Sprite("assets/spritesheet16x16"), 0, 80, TILESIZE, TILESIZE);
-		if(paused) {	
-			FillRect((SCREEN_WIDTH/2) - drawJuiceMax , 20, drawJuiceMax*2, 40, olc::Pixel(0,0,0)); 
-			FillRect((SCREEN_WIDTH/2) - drawJuiceMax, 20, drawJuice*2, 40, olc::Pixel(100,255,50)); 
-		}
-		else{
-//			FillRect(SCREEN_WIDTH/2, 20, 40, 40, olc::Pixel(50,200,50));
-		}
-		// Movement Logic	
-		if(GetKey(olc::Key::RIGHT).bHeld)
-		{
-			player.setMoving(true);
-			player.setDirection(1);
-		} else	if(GetKey(olc::Key::LEFT).bHeld) {
-			player.setMoving(true);
-			player.setDirection(-1);
-		} else {
-			player.setMoving(false);
-		}
-		
-		if(GetKey(olc::Key::SPACE).bPressed)
-		{
-			player.jump();
-		}
-	
-		if(player.getY() > SCREEN_HEIGHT - 32) 
-		{
-			player.setGrounded(true);
-			player.setY(SCREEN_HEIGHT - 32);
-		}	
-	
-		// Rendering
-		
-		DrawSprite(this->player.getX()-8, this->player.getY()-8, new olc::Sprite("assets/waluigi_right1.png"));
-		// Create tiles when clicking
-		int closestTdileX, closestTileY;
-		if(GetMouse(0).bHeld && paused && drawJuice>0){
-			int closestTileX = GetMouseX()/TILESIZE;
-			int closestTileY = GetMouseY()/TILESIZE;
-			if (!map[closestTileY][closestTileX]==1){
-				map[closestTileY][closestTileX]=1;
-				DrawSprite((closestTileX)*TILESIZE, (closestTileY)*TILESIZE, new olc::Sprite("assets/block.png"));
-				drawJuice--;
-			}
-		}
-		if(GetKey(olc::Key::ESCAPE).bPressed){
-			paused = !paused;
-		}	
+
+		checkInputs();
+
+		Render();
+
+		createTiles();
 
 		// Only update player if not paused
-		if(!paused) player.update();
-
-		int playerTileX = player.getX() / TILESIZE;
-		int playerTileY = player.getY() / TILESIZE;
-		for (int i = -4; i <= 4; i++)
-		{ 
-			for (int j = -4; j <= 4; j++)
-			{	
-				if(playerTileX+j <= 0) playerTileX = -j;
-				if(playerTileX+j >= SCREEN_WIDTH/TILESIZE) playerTileX = (SCREEN_WIDTH/TILESIZE)-j;
-				if(playerTileY+i <= 0) playerTileY = -i;
-				if(playerTileY+i >= SCREEN_HEIGHT/TILESIZE) playerTileY = (SCREEN_HEIGHT/TILESIZE)-i;
-				
-				if(map[playerTileY+i][playerTileX+j]==1)
-				{
-					/*
-					olc::Sprite mysprite(20, 20);
-					mysprite.SetPixel(0, 0, olc::RED);
-					DrawSprite(20, 20, &mysprite, 2);
-					*/	
-					DrawSprite((playerTileX+j)*TILESIZE, (playerTileY+i)*TILESIZE, new olc::Sprite("assets/block.png"));
-				}
-			}
-		}		
-
-		// Collision Detection
-			// Horizontal LEFT
-		if((map[playerTileY][playerTileX-1] == 1 || map[playerTileY+1][playerTileX-1] == 1) && player.getDirection() == -1) player.setXVel(0.0f); 
-			// Horizontal RIGHT
-		if((map[playerTileY][playerTileX+2] == 1 || map[playerTileY+1][playerTileX+2] == 1) && player.getDirection() == 1) player.setXVel(0.0f);
-			// Vertical UP 
-		if((map[playerTileY-1][playerTileX] == 1 || map[playerTileY-1][playerTileX+1] == 1)) player.setYVel(1.0f);
-			// Vertical DOWN 
-		if((map[playerTileY+2][playerTileX] == 1 || map[playerTileY+2][playerTileX+1] == 1) && player.getGrounded() == false)
+		if(!paused) 
 		{
-			player.setYVel(0.0f);
-			player.setGrounded(true);
-		} else {
-			player.setGrounded(false);
-		} 
-
-		// monster movement logic
-		if(!paused) {
-			monster.setx(monster.getx()+monster.getspeed()*monster.getdirection());
-			monster.sety(monster.gety() + GRAVITY);
+			for(auto &e:entities) 
+			{
+				e->update();
+			}
+			
+			// monster update
+			monster.setX(monster.getX()+monster.getspeed()*monster.getdirection());
+			monster.setY(monster.getY() + GRAVITY);
 		}
-		if(GetKey(olc::C).bPressed && GetKey(olc::CTRL).bHeld) return false;
+		// Collision Detection
+
 		return true;
 	}
 	bool OnUserDestroy() override

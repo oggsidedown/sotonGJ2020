@@ -1,64 +1,54 @@
 #include "include/constants.h"
 #include "include/olcPixelGameEngine.h"
-class Monster : public olc::PixelGameEngine
+#include "Entity.cpp"
+
+class Monster : public Entity
 {
 private:
-	int x;
-	int y;
 	int speed = 2;
-	int direction; // 1 is right, -1 is left
+	int direction = 1; // 1 is right, -1 is left
 public:
-	Monster(float x, float y, float direction)
+	
+	using Entity::Entity;
+	
+	int getdirection()
 	{
-		//relative to pixel
-		this->x = x;
-		this->y = y;
-		this->direction = direction;
-	}
-	int gety(){
-		return this->y;
-	}
-	int getx(){
-		return this->x;
-	}
-	int getdirection(){
 		return this->direction;
 	}
-	int getspeed(){
+	int getspeed()
+	{
 		return this->speed;
 	}
-	void sety(int yinput){
-		this->y=yinput;
-		if(this->y>=SCREEN_HEIGHT-32){
-			this->y=SCREEN_HEIGHT-32;
-		}
-		if(this->y<0){
-			this->y=0;
-		}
-		return;
-	}
-	void setx(int xinput){
-		this->x=xinput;
+
+	void update() override
+	{
+		// Horizontal boundaries
 		if(this->x<0){
 				this->x=0;
 				this->direction = 1;
 		}
-		if(this->x>1279){
-				this->x=1279;
+		if(this->x>SCREEN_WIDTH){
+				this->x=SCREEN_WIDTH;
 				this->direction = -1;
 		}
-		return;
+		// Vertical boundaries
+		if(this->y>=SCREEN_HEIGHT-TILESIZE){
+			this->y=SCREEN_HEIGHT-TILESIZE;
+		}
+		if(this->y<0){
+			this->y=0;
+		}
 	}
-	void setspeed(int speedinput){
+
+	void setSpeed(int speedinput)
+	{
 		this->speed=speedinput;
 		return;
 	}
-	void setdirection(int directioninput){
+	void setDirection(int directioninput)
+	{
 		this->direction=directioninput;
 		return;
-	}
-private:
-	void readSpriteData(){
 	}
 };
 		

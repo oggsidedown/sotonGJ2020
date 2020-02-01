@@ -1,12 +1,11 @@
 #include <iostream>
 #include "include/constants.h"
 #include "include/olcPixelGameEngine.h"
+#include "Entity.cpp"
 
-class Player : public olc::PixelGameEngine 
+class Player : public Entity
 {
 private:
-	int x;
-	int y;
 	int max_vel_x = 5;	
 	float y_vel = 0.0f;
 	
@@ -18,39 +17,12 @@ private:
 	float run_vel = 0.0f; 
 public:
 
-	Player(int x, int y)
-	{
-		//Relative to pixel
-		this->x = x;
-		this->y = y;
-	}
+	using Entity::Entity;
 
-	void Render()
-	{
-		Draw(getX(), getY(), olc::Pixel(100,100,100));
-	}
-
-	int getX()
-	{
-		return this->x;
-	}
-	int getY()
-	{
-		return this->y;
-	}
 	int getSpeed()
 	{
 		return this->max_vel_x;
 	}	
-
-	void setX(int x)
-	{
-		this->x = x;
-	}
-	void setY(int y)
-	{
-		this->y = y;
-	}
 
 	void setGrounded(bool grounded) 
 	{
@@ -82,7 +54,8 @@ public:
 	{
 		return direction;
 	}		
-	void update() {
+	void update() override
+	{
 		// gravity accelerates
 		if(!grounded) 
 		{
@@ -108,7 +81,7 @@ public:
 	{
 		if(grounded) 
 		{
-			y_vel = -8.0f;
+			y_vel = -12.0f;
 			setGrounded(false);
 		}
 	}
