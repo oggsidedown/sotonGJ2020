@@ -18,7 +18,8 @@ private:
 	bool paused = false;
 	int newLevel = 1;
 	int level = 1;
-	Goal goal = Goal(1200, 55*TILESIZE);
+	Goal goal = Goal(1200, 25*TILESIZE);
+	olc::Sprite fact_sprite = olc::Sprite("factory.png");
 public:
 	Game()
 	{
@@ -49,8 +50,8 @@ public:
 			switch(level++){
 				case 1:
 					for(int i=0;i<SCREEN_WIDTH/TILESIZE;i++)
-						for(int j=0;j<SCREEN_HEIGHT;j+=0
-							DrawPartialSprite(i*8,j*8, new olc::Sprite("factory.png"), i*8,j*8,8,8);
+						for(int j=0;j<SCREEN_HEIGHT/TILESIZE;j++)
+							DrawPartialSprite(i*TILESIZE,j*TILESIZE, &fact_sprite, i*TILESIZE,j*TILESIZE,TILESIZE,TILESIZE);
 					for(int i=0;i<SCREEN_WIDTH/TILESIZE;i++){
 						map[30][i]=1;
 						DrawSprite(i*TILESIZE, 30*TILESIZE, new olc::Sprite("block.png"));
@@ -61,11 +62,11 @@ public:
 					FillRect(0,0,SCREEN_WIDTH-1, SCREEN_HEIGHT-1, olc::Pixel(50,200,50));
 					goal.setx(1200);
 					goal.sety(25*TILESIZE);
-					for(int i=0;i<SCREEN_WIDTH/32;i++){
+					for(int i=0;i<SCREEN_WIDTH/TILESIZE;i++){
 						map[i][30] = 1;
 						DrawSprite(i*TILESIZE, 30*TILESIZE, new olc::Sprite("block.png"));
 					}
-					for(int i=SCREEN_WIDTH*3/32;i<SCREEN_WIDTH/TILESIZE;i++){
+					for(int i=SCREEN_WIDTH*3/TILESIZE;i<SCREEN_WIDTH/TILESIZE;i++){
 						map[30][i] = 1;
 						DrawSprite(i*TILESIZE, 30*TILESIZE, new olc::Sprite("block.png"));
 					}

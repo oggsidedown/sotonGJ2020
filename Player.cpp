@@ -107,7 +107,7 @@ public:
 	{
 		if(grounded) 
 		{
-			y_vel = -5.0f;
+			y_vel = -8.0f;
 			setGrounded(false);
 		}
 	}
