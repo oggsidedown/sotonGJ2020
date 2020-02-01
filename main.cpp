@@ -75,7 +75,6 @@ public:
 	
 		int playerTileX = player.getX() / 8;
 		int playerTileY = player.getY() / 8;
-		std::cout << player.getX() << ", " << player.getY() << std::endl;
 		for (int i = -4; i <= 4; i++)
 		{ 
 			for (int j = -4; j <= 4; j++)
