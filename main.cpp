@@ -25,8 +25,15 @@ public:
 			for(int y = 0; y < ScreenHeight(); y++)
 				Draw(x,y,olc::Pixel(50,200,50));
 		// Called at the start
+<<<<<<< HEAD
 		for(int i=0;i<(int)SCREEN_HEIGHT/8;i++)
 			for(int j=0;j<(int)SCREEN_WIDTH/8;j++)
+=======
+		int paused =0;
+		int drawJuice = 40;
+		for(int i=0;i<160;i++)
+			for(int j=0;j<90;j++)
+>>>>>>> bb09044a9fd07f5f173cfa3eb5d5ec4a80a26fed
 				map[i][j]=0;
 		return true;
 	}
@@ -36,6 +43,12 @@ public:
 //		Clear(olc::WHITE);	
 		Draw(this->player.getX(), this->player.getY(), olc::Pixel(100,100,100));
 		Draw(monster.getx(), monster.gety(), olc::Pixel(0,100,0));
+		if(paused){
+			FillRect(SCREEN_WIDTH/2, 5, drawJuice, 10, olc::Pixel(0,100,0)); 
+		}
+		else{
+			fillRect(SCREEN_WIDTH/2, 5, 40, 10, olc::Pixel(50,200,50));
+		}
 		// Movement Logic	
 		if(GetKey(olc::Key::RIGHT).bHeld)
 		{
@@ -66,13 +79,19 @@ public:
 		DrawSprite(this->player.getX(), this->player.getY(), new olc::Sprite("charTEMP.png"));
 		// Create tiles when clicking
 		int closestTdileX, closestTileY;
-		if(GetMouse(0).bHeld){
+		if(GetMouse(0).bHeld && paused && drawJuice>0){
 			int closestTileX = GetMouseX()/8;
 			int closestTileY = GetMouseY()/8;
 			map[closestTileY][closestTileX]=1;
 			DrawSprite((closestTileX)*8, (closestTileY)*8, new olc::Sprite("block.png"));
+			drawJuice--;
 		}
-	
+		if(GetKey(olc::Key::ESCAPE)){
+			if(paused)
+				paused = 0;
+			if(!paused)
+				paused = 1;
+		}	
 		int playerTileX = player.getX() / 8;
 		int playerTileY = player.getY() / 8;
 		for (int i = -4; i <= 4; i++)
