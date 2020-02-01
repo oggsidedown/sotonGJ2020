@@ -7,7 +7,8 @@ private:
 	int x;
 	int y;
 	int max_vel_x = 5;	
-
+	float y_vel = 0.0f;
+	
 	bool grounded = false;
 	// 1 or -1
 	int direction = 1;
@@ -67,9 +68,10 @@ public:
 		// gravity accelerates
 		if(!grounded) 
 		{
-			setY(getY() + (GRAVITY * grav_vel));
-			grav_vel += 0.02f;
-			if(grav_vel > 1.0f) grav_vel = 1.0f;	
+			setY(getY() + y_vel);
+			y_vel += GRAVITY * grav_vel; 	
+			grav_vel += 0.01f;
+			if(grav_vel > 1.0f) grav_vel = 1.0f;
 		} else {
 			grav_vel = 0.0f;
 		}
@@ -83,6 +85,15 @@ public:
 		}
 		setX(getX() + (getSpeed() * run_vel * direction));	
 	}	
+
+	void jump() 
+	{
+		if(grounded) 
+		{
+			y_vel = -8.0f;
+			setGrounded(false);
+		}
+	}
 	
 private:
 	void readSpriteData(){

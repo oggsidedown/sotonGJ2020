@@ -46,6 +46,11 @@ public:
 			player.setMoving(false);
 		}
 		
+		if(GetKey(olc::Key::SPACE).bPressed)
+		{
+			player.jump();
+		}
+	
 		if(player.getY() > SCREEN_HEIGHT - 32) 
 		{
 			player.setGrounded(true);
