@@ -28,6 +28,11 @@ public:
 	{
 		Draw(getX(), getY(), olc::Pixel(100,100,100));
 	}
+	
+	int getDirection()
+	{
+		return this->direction;
+	}
 
 	int getX()
 	{
