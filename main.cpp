@@ -11,7 +11,7 @@ class Game : public olc::PixelGameEngine
 private:
 	Player player = Player(1, 5);
 	Monster monster = Monster(0, 0, 1);
-	int map[SCREEN_HEIGHT/8][SCREEN_WIDTH/8];
+	int map[(int)SCREEN_HEIGHT/8][(int)SCREEN_WIDTH/8];
 public:
 	Game()
 	{
@@ -24,15 +24,15 @@ public:
 			for(int y = 0; y < ScreenHeight(); y++)
 				Draw(x,y,olc::Pixel(50,200,50));
 		// Called at the start
-		for(int i=0;i<160;i++)
-			for(int j=0;j<90;j++)
+		for(int i=0;i<(int)SCREEN_HEIGHT/8;i++)
+			for(int j=0;j<(int)SCREEN_WIDTH/8;j++)
 				map[i][j]=0;
 		return true;
 	}
 	bool OnUserUpdate(float fElapsedTime) override
 	{
 		// Called once per frame
-		
+//		Clear(olc::WHITE);	
 		Draw(this->player.getX(), this->player.getY(), olc::Pixel(100,100,100));
 		Draw(monster.getx(), monster.gety(), olc::Pixel(0,100,0));
 		// Movement Logic	
@@ -74,10 +74,16 @@ public:
 	
 		int playerTileX = player.getX() / 8;
 		int playerTileY = player.getY() / 8;
-		for (int i = -3; i < 3; i++)
+		std::cout << player.getX() << ", " << player.getY() << std::endl;
+		for (int i = -4; i <= 4; i++)
 		{ 
-			for (int j = -3; i < 3; i++)
-			{
+			for (int j = -4; j <= 4; j++)
+			{	
+				if(playerTileX+j <= 0) playerTileX = -j;
+				if(playerTileX+j >= SCREEN_WIDTH/8) playerTileX = (SCREEN_WIDTH/8)-j;
+				if(playerTileY+i <= 0) playerTileY = -i;
+				if(playerTileY+i >= SCREEN_HEIGHT/8) playerTileY = (SCREEN_HEIGHT/8)-i;
+				
 				if(map[playerTileY+i][playerTileX+j]==1)
 				{
 					DrawSprite((playerTileX+j)*8, (playerTileY+i)*8, new olc::Sprite("block.png"));
@@ -88,6 +94,7 @@ public:
 		// monster movement logic
 		monster.setx(monster.getx()+monster.getspeed()*monster.getdirection());
 		monster.sety(monster.gety() + GRAVITY);
+		if(GetKey(olc::C).bPressed && GetKey(olc::CTRL).bHeld) return false;
 		return true;
 	}
 	bool OnUserDestroy() override
