@@ -84,7 +84,7 @@ public:
 			
 		}
 		Draw(this->player.getX(), this->player.getY(), olc::Pixel(100,100,100));
-		Draw(monster.getx(), monster.gety(), olc::Pixel(0,100,0));
+		DrawPartialSprite(monster.getx(), monster.gety(), new olc::Sprite("spritesheet16x16"), 0, 80, TILESIZE, TILESIZE);
 		if(paused) {	
 			FillRect((SCREEN_WIDTH/2) - drawJuiceMax , 20, drawJuiceMax*2, 40, olc::Pixel(0,0,0)); 
 			FillRect((SCREEN_WIDTH/2) - drawJuiceMax, 20, drawJuice*2, 40, olc::Pixel(100,255,50)); 
@@ -115,8 +115,9 @@ public:
 			player.setY(SCREEN_HEIGHT - 32);
 		}	
 	
-		// Rendering	
-		DrawSprite(this->player.getX(), this->player.getY(), new olc::Sprite("charTEMP.png"));
+		// Rendering
+		
+		DrawSprite(this->player.getX()-8, this->player.getY()-8, new olc::Sprite("waluigi_right1.png"));
 		// Create tiles when clicking
 		int closestTdileX, closestTileY;
 		if(GetMouse(0).bHeld && paused && drawJuice>0){
