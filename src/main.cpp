@@ -1,10 +1,10 @@
 #define OLC_PGE_APPLICATION
 #include <iostream>
 #include <map>
-#include "olcPixelGameEngine.h"
+#include "include/olcPixelGameEngine.h"
+#include "include/constants.h"
 #include "Player.cpp"
 #include "Monster.cpp"
-#include "constants.h"
 #include "Goal.cpp"
 
 class Game : public olc::PixelGameEngine
@@ -19,7 +19,7 @@ private:
 	int newLevel = 1;
 	int level = 1;
 	Goal goal = Goal(1200, 25*TILESIZE);
-	olc::Sprite fact_sprite = olc::Sprite("factory.png");
+	olc::Sprite fact_sprite = olc::Sprite("assets/factory.png");
 public:
 	Game()
 	{
@@ -28,7 +28,7 @@ public:
 	bool OnUserCreate() override
 	{
 		// Called at the start	
-		system("canberra-gtk-play -f audio.ogg");
+		system("canberra-gtk-play -f assets/audio.ogg");
 		for(int x = 0; x < ScreenWidth(); x++)
 			for(int y = 0; y < ScreenHeight(); y++)
 				Draw(x,y,olc::Pixel(50,200,50));
@@ -54,9 +54,9 @@ public:
 							DrawPartialSprite(i*TILESIZE,j*TILESIZE, &fact_sprite, i*TILESIZE,j*TILESIZE,TILESIZE,TILESIZE);
 					for(int i=0;i<SCREEN_WIDTH/TILESIZE;i++){
 						map[30][i]=1;
-						DrawSprite(i*TILESIZE, 30*TILESIZE, new olc::Sprite("block.png"));
+						DrawSprite(i*TILESIZE, 30*TILESIZE, new olc::Sprite("assets/block.png"));
 					}
-					DrawSprite(goal.getx(), goal.gety(), new olc::Sprite("spanner1.png"));
+					DrawSprite(goal.getx(), goal.gety(), new olc::Sprite("assets/spanner1.png"));
 					break;
 				case 2:
 					FillRect(0,0,SCREEN_WIDTH-1, SCREEN_HEIGHT-1, olc::Pixel(50,200,50));
@@ -64,11 +64,11 @@ public:
 					goal.sety(25*TILESIZE);
 					for(int i=0;i<SCREEN_WIDTH/TILESIZE;i++){
 						map[i][30] = 1;
-						DrawSprite(i*TILESIZE, 30*TILESIZE, new olc::Sprite("block.png"));
+						DrawSprite(i*TILESIZE, 30*TILESIZE, new olc::Sprite("assets/block.png"));
 					}
 					for(int i=SCREEN_WIDTH*3/TILESIZE;i<SCREEN_WIDTH/TILESIZE;i++){
 						map[30][i] = 1;
-						DrawSprite(i*TILESIZE, 30*TILESIZE, new olc::Sprite("block.png"));
+						DrawSprite(i*TILESIZE, 30*TILESIZE, new olc::Sprite("assets/block.png"));
 					}
 					break;
 			}
@@ -84,7 +84,7 @@ public:
 			
 		}
 		Draw(this->player.getX(), this->player.getY(), olc::Pixel(100,100,100));
-		DrawPartialSprite(monster.getx(), monster.gety(), new olc::Sprite("spritesheet16x16"), 0, 80, TILESIZE, TILESIZE);
+		DrawPartialSprite(monster.getx(), monster.gety(), new olc::Sprite("assets/spritesheet16x16"), 0, 80, TILESIZE, TILESIZE);
 		if(paused) {	
 			FillRect((SCREEN_WIDTH/2) - drawJuiceMax , 20, drawJuiceMax*2, 40, olc::Pixel(0,0,0)); 
 			FillRect((SCREEN_WIDTH/2) - drawJuiceMax, 20, drawJuice*2, 40, olc::Pixel(100,255,50)); 
@@ -117,7 +117,7 @@ public:
 	
 		// Rendering
 		
-		DrawSprite(this->player.getX()-8, this->player.getY()-8, new olc::Sprite("waluigi_right1.png"));
+		DrawSprite(this->player.getX()-8, this->player.getY()-8, new olc::Sprite("assets/waluigi_right1.png"));
 		// Create tiles when clicking
 		int closestTdileX, closestTileY;
 		if(GetMouse(0).bHeld && paused && drawJuice>0){
@@ -125,7 +125,7 @@ public:
 			int closestTileY = GetMouseY()/TILESIZE;
 			if (!map[closestTileY][closestTileX]==1){
 				map[closestTileY][closestTileX]=1;
-				DrawSprite((closestTileX)*TILESIZE, (closestTileY)*TILESIZE, new olc::Sprite("block.png"));
+				DrawSprite((closestTileX)*TILESIZE, (closestTileY)*TILESIZE, new olc::Sprite("assets/block.png"));
 				drawJuice--;
 			}
 		}
@@ -154,7 +154,7 @@ public:
 					mysprite.SetPixel(0, 0, olc::RED);
 					DrawSprite(20, 20, &mysprite, 2);
 					*/	
-					DrawSprite((playerTileX+j)*TILESIZE, (playerTileY+i)*TILESIZE, new olc::Sprite("block.png"));
+					DrawSprite((playerTileX+j)*TILESIZE, (playerTileY+i)*TILESIZE, new olc::Sprite("assets/block.png"));
 				}
 			}
 		}		

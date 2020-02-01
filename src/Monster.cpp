@@ -1,4 +1,5 @@
-#include "constants.h"
+#include "include/constants.h"
+#include "include/olcPixelGameEngine.h"
 class Monster : public olc::PixelGameEngine
 {
 private:
