@@ -40,7 +40,7 @@ public:
 		if(newLevel){
 			switch(level++){
 				case 1:
-					for(i=0;i<SCREEN_WIDTH;i++){
+					for(i=0;i<SCREEN_WIDTH/8;i++){
 						map[i][60]=1;
 						DrawSprite(i*8, 60*8, new olc::Sprite("block.png"));
 					}
@@ -49,6 +49,16 @@ public:
 				break;
 				case 2:
 					FillRect(0,0,SCREEN_WIDTH-1, SCREEN_HEIGHT-1, olc::Pixel(50,200,50);
+					goal.setx(1200);
+					goal.sety(55*8);
+					for(i=0;i<SCREEN_WIDTH/32;i++){
+						map[i][60] = 1;
+						DrawSprite(i*8, 60*8, new olc::Sprite("block.png"));
+					}
+					for(i=SCREEN_WIDTH*3/32;i<SCREEN_WIDTH/8;i++){
+						map[i][60] = 1;
+						DrawSprite(i*8, 60*8, new olc::Sprite("block.png"));
+					}
 				break;
 			}
 			newLevel=0;
@@ -57,6 +67,9 @@ public:
 			newLevel=1;
 			player.setX(1);
 			player.setY(2);
+			for(int i=0;i<160;i++)
+				for(int j=0;j<90;j++)
+					map[i][j]=0;
 			
 		}
 		Draw(this->player.getX(), this->player.getY(), olc::Pixel(100,100,100));
