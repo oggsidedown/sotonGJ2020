@@ -15,6 +15,9 @@ private:
 	bool moving = false;
 	float grav_vel = 0.0f;
 	float run_vel = 0.0f; 
+	int checkX, checkY;
+	bool throughWall = false;
+	float firstWall;
 public:
 
 	using Entity::Entity;
@@ -54,18 +57,8 @@ public:
 	{
 		return direction;
 	}		
-	void update() override
+	void update(int *inputmap[SCREEN_HEIGHT/TILESIZE][SCREEN_WIDTH/TILESIZE]) override
 	{
-		// gravity accelerates
-		if(!grounded) 
-		{
-			setY(getY() + y_vel);
-			y_vel += GRAVITY * grav_vel; 	
-			grav_vel += 0.01f;
-			if(grav_vel > 1.0f) grav_vel = 1.0f;
-		} else {
-			grav_vel = 0.0f;
-		}
 		// Some acceleration
 		if(moving) {
 			run_vel += 0.05f ;
@@ -74,7 +67,36 @@ public:
 			run_vel -= 0.05f;
 			if(run_vel <= 0.0f) run_vel = 0.0f;
 		}
-		setX(getX() + (getSpeed() * run_vel * direction));	
+		checkX = getX() + (getSpeed() * run_vel * direction);
+		checkY = getY() + y_vel;
+		for(int i=0;i<50;i++){
+			if(inputmap[(int)(getY()+i*(checkY-getY())/50)][(int)(getX()+i*(checkX-getX())/50)]==1){
+				if(!throughWall)
+					firstWall = i;
+				throughWall=true;
+			}
+		}
+		// gravity accelerates
+		if(!grounded) 
+		{
+			if(!throughWall){
+				setY(getY() + y_vel);
+			}
+			else{
+				setY((int)(getY()+(checkY-getY())*i/50));
+			}
+			y_vel += GRAVITY * grav_vel; 	
+			grav_vel += 0.01f;
+			if(grav_vel > 1.0f) grav_vel = 1.0f;
+		} else {
+			grav_vel = 0.0f;
+		}
+		if(!throughWall){
+			setX(getX() + (getSpeed() * run_vel * direction));
+		}
+		else{
+			setX((int)(getX()+(checkX-getX())*firstWall/50));
+		}
 	}	
 	
 	void jump() 
